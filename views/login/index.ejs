@@ -1,0 +1,55 @@
+<div class="container">
+    <% if(model.hasError) {
+        %>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Error</strong> <%= model.errorMessage %>
+        </div>
+        <%
+    }
+    %>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Login</div>
+                <div class="panel-body">
+                    <form action="/login/login" method="POST">
+                        <div class="form-group">
+                            <label for="login-username">Username</label>
+                            <input name="username" type="text" class="form-control" id="login-username"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input name="password" type="password" class="form-control" id="login-password"></input>
+                        </div>
+                        <button type="submit" class="btn btn-default">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register</div>
+                <div class="panel-body">
+                    <form action="/login/register" method="POST">
+                        <div class="form-group">
+                            <label for="register-username">Username</label>
+                            <input name="username" type="text" class="form-control" id="register-username"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">E-Mail</label>
+                            <input name="email" type="email" class="form-control" id="register-email"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input name="password" type="password" class="form-control" id="register-password"></input>
+                        </div>
+                        <button type="submit" class="btn btn-default">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,68 @@
+<header>
+    <link rel="stylesheet" type="text/css" href="/static/css/select2.css"></link>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css"></link>
+    <script src="/static/lib/jquery.js"></script>
+    <script src="/static/lib/knockout-latest.js"></script>
+    <script src="/static/lib/select2.js"></script>
+    <script src="/static/lib/bootstrap.js"></script>
+    <script src="/static/client/utils.js"></script>
+    <script id="data-model" data-model="<%if(typeof(model) != 'undefined') { %> <%= JSON.stringify(model); %> <% } %> "></script>
+</header>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">NRAM</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <% MenuItems.forEach(element => {
+                    if(element.type == 0) {
+                        if(element.active) {
+                            %>
+                            <li class="active"><a href="<%- element.link%>"><%- element.displayName%> <span class="sr-only">(current)</span></a></li>
+                            <%
+                        } else {
+                            %>
+                            <li><a href="<%- element.link%>"><%- element.displayName%></a></li>
+                            <%
+                        }
+                    } else if(element.type == 1) {
+                        %>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <%- element.displayName%>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <% element.children.forEach(dropdownElement => {
+                                    if(dropdownElement.type == 0) {
+                                        if(dropdownElement.active) {
+                                            %>
+                                            <li class="active"><a href="<%- dropdownElement.link%>"><%- dropdownElement.displayName%> <span class="sr-only">(current)</span></a></li>
+                                            <%
+                                        } else {
+                                            %>
+                                            <li><a href="<%- dropdownElement.link%>"><%- dropdownElement.displayName%></a></li>
+                                            <%
+                                        }
+                                    }
+                                });
+                                %>
+                            </ul>
+                        </li>
+                        <%
+                    }
+                }); %>
+        </ul>
+    </nav>
+    <% if(typeof(username) != "undefined") {%>
+    <%= username %>
+    <% } %>
+    <%- body %>
+</body>

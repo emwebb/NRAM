@@ -1,0 +1,38 @@
+<script src="/static/client/index.js"></script>
+<table>
+    <tbody>
+        <tr>
+            <th>
+                <select id="select" data-bind=" options: selectableChampions,
+                                                value: selectedChampion">
+                </select>
+                <button data-bind="click : addChampion">Add</button>
+                <table > 
+                    <tbody data-bind="foreach: championList">
+                        <tr>
+                            <th>
+                                <img data-bind="attr: {src: 'static/img/champion/' + $data + '.png'}" width="25" height="25"/>
+                            </th>
+                            <th>
+                                <span data-bind="text: $data"></span>
+                            </th>
+                            <th>
+                                <button data-bind="click : $parent.removeChampion">remove</button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </th>
+            <th>
+                <button data-bind="click : getRandomChampion, enable: championList().length > 0">Random!</button>
+                <div data-bind="visible: chosenChampion() != '' ">
+                    <img data-bind="attr: {src: 'static/img/champion/' + chosenChampion() + '.png'}" width="25" height="25"/>
+                    <span data-bind="text: chosenChampion()"></span>
+                </div>
+            </th>
+        </tr>
+    </tbody>
+</table>
+
+
+

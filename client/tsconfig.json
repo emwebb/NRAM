@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "none",
+        "rootDir": "./",
+        "outDir": "./../build/static/client",
+        "esModuleInterop": true,
+        "strict": true
+    }
+}
