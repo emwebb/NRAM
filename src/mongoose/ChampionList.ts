@@ -16,3 +16,5 @@ export const ChampionListSchema = new Schema({
         required: true
     }
 });
+
+export default mongoose.model<IChampionList>('ChampionList', ChampionListSchema);

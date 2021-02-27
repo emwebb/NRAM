@@ -26,6 +26,12 @@ var middlware : RequestHandler = (req, res, next) => {
 
     if(req.user != null) {
         menuItems.push({
+            displayName : 'Champion Lists',
+            type: MenuItemType.Button,
+            link: '/championlists/',
+            active : req.url == '/championlists/'
+        });
+        menuItems.push({
             displayName : (req.user as IUser).username.toString(),
             type: MenuItemType.Dropdown,
             children : [

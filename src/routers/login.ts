@@ -1,9 +1,9 @@
 import express, { Router } from "express"
 import passport from "passport"
-import {Login} from "../logic/login/login"
-import RouterPassIn from "./routerPassIn";
+import {LoginLogic} from "../logic/login/login"
+import User from "../mongoose/User";
 
-export default (routerPassIn : RouterPassIn) : Router => {
+export default () : Router => {
 
     enum LoginErrors {
         Unknown = 0,
@@ -44,20 +44,20 @@ export default (routerPassIn : RouterPassIn) : Router => {
     ));
 
     router.post('/register', (req, res, next) => {
-        routerPassIn.models.User.findOne({
+        User.findOne({
             username : req.body['username']
         }).then((user) => {
             if(user) {
                 res.redirect(`/login?error=${LoginErrors.UsernameTakes}`);
                 
             }
-            if(!Login.isSecurePassword(req.body['password'])) {
+            if(!LoginLogic.isSecurePassword(req.body['password'])) {
                 res.redirect(`/login?error=${LoginErrors.UnsecurePassword}`);
             }
-            var saltHash = Login.generatePassword(req.body['password']);
+            var saltHash = LoginLogic.generatePassword(req.body['password']);
             var salt = saltHash.salt;
             var hash = saltHash.hash;
-            var newUser = new routerPassIn.models.User(
+            var newUser = new User(
                 {
                     username: req.body['username'],
                     hash: hash,

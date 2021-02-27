@@ -54,7 +54,7 @@ function getRiotData(cb) {
                     }
                     download(championList.map((championName) => {
                         return `http://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/champion/${championName}.png`;
-                    })).pipe(dest('riotdata/img/')).on('finish', () => {
+                    })).pipe(dest('riotdata/img/champion/')).on('finish', () => {
                         cb();
                     });
                 });

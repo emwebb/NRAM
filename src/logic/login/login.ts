@@ -1,7 +1,8 @@
 
 import crypto from "crypto";
+import { Logic } from "../logic";
 
-export namespace Login {
+export namespace LoginLogic {
     export function validatePassword(password : string, salt: string, hash: string) : boolean {
         var hashVerify = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
         return hash === hashVerify;
@@ -16,6 +17,10 @@ export namespace Login {
 
     export function isSecurePassword(password : string) : boolean {
         return password.length > 10;
+    }
+
+    export class LoginLogic extends Logic {
+
     }
     
     export class HashSaltPair {

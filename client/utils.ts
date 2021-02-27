@@ -6,4 +6,30 @@ namespace Utils {
         } 
         
     }
+
+    export function ajax<T,B>(url : string, method : string, body : B | undefined) : Promise<T> {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                method : method,
+                url : url,
+                data : body,
+                success : (data) => {
+                    resolve(data);
+                },
+                error : (err) => {
+                    reject(err);
+                }
+            });
+        });
+    }
 }
+
+$(() => {
+    $('.select2').select2({
+        dropdownAutoWidth : true
+    });
+    $('.select2-200').select2({
+        dropdownAutoWidth : true,
+        width : '200'
+    });
+});

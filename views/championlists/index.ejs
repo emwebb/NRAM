@@ -1,0 +1,74 @@
+<script src="/static/client/championlists.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Create New List</div>
+                <div class="panel-body"> 
+                    <div class="form-group">
+                        <input id="champListName" type="text" data-bind="value : newListName" placeholder="Name" class="form-control"></input>
+                        <button data-bind="click : fnAddList" class="btn btn-default">Add New List</button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Champion Lists</div>
+                <div class="panel-body">
+                    <div class="btn-group-vertical" data-bind="foreach: championLists" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" data-bind="click : $parent.selectedChampionList($data), text : $data.name, class : $parent.selectedChampionList().id == $data.id ? 'active' : ''"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default" data-bind="visible: (selectedChampionList() != null && selectedChampionList().id != '')">
+                <div class="panel-heading">
+                    <span data-bind="text : selectedChampionList().name"></span>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <select id="select" class="select2-200" style="width: 200;" data-bind=" options: selectableChampions,
+                                                                                                value: selectedChampion">
+                        </select>
+                        <button data-bind="click : fnAddChampion" class="btn btn-default">Add</button>
+                        <button data-bind="click : fnDeleteList" class="btn btn-danger" style="float: right;">Delete List</button>
+                    </div>
+                    <table class="table"> 
+                        <tbody data-bind="foreach: championList">
+                            <tr>
+                                <th>
+                                    <img data-bind="attr: {src: '/static/img/champion/' + $data + '.png'}" width="25" height="25"/>
+                                </th>
+                                <th>
+                                    <span data-bind="text: $data"></span>
+                                </th>
+                                <th>
+                                    <button data-bind="click : $parent.fnRemoveChampion" class="btn btn-danger">remove</button>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<table>
+    <tbody>
+        <tr>
+            <th>
+               
+
+            </th>
+            <th data-bind="visible: (championLists() != '')">
+                
+            </th>
+        </tr>
+    </tbody>
+</table>
+
+
+

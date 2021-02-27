@@ -2,6 +2,7 @@ import express from "express"
 import path from "path"
 import index from "./routers/index"
 import login from "./routers/login"
+import championlists from "./routers/championlists"
 import bodyParser from "body-parser"
 import expressEjsLayouts from "express-ejs-layouts";
 import mongoose, {Connection} from "mongoose";
@@ -9,10 +10,8 @@ import passport from "passport";
 import {Strategy as LocalStratagy} from "passport-local";
 import session from "express-session";
 import connectMongo from "connect-mongo";
-import {IUser} from "./mongoose/User";
-import ModelGen from "./mongoose/Schemas";
-import { Login } from "./logic/login/login";
-import RouterPassIn from './routers/routerPassIn';
+import User, {IUser} from "./mongoose/User";
+import { LoginLogic } from "./logic/login/login";
 import UserMiddleware from './middleware/userMiddleware'
 import MenuMiddleware from './middleware/menuMiddleware'
 
@@ -27,8 +26,6 @@ mongoose.connect(dbString);
 
 const mongooseConnection : Connection = mongoose.connection;
 
-const models = ModelGen(mongoose.model);
-const routerPassIn = new RouterPassIn(models);
 // Setup login
 const MongoStore = connectMongo(session);
 const sessionStore = new MongoStore({
@@ -49,11 +46,11 @@ app.use(session({
 
 passport.use( new LocalStratagy(
     (username, password, cb) => {
-        models.User.findOne({username : username}).then((user) => {
+        User.findOne({username : username}).then((user) => {
             if(!user) {
                 return cb(null, false);
             }
-            var isValid = Login.validatePassword(password, user.salt.toString(), user.hash.toString());
+            var isValid = LoginLogic.validatePassword(password, user.salt.toString(), user.hash.toString());
 
             if(isValid) {
                 return cb(null, user)
@@ -72,7 +69,7 @@ passport.serializeUser((user, cb) => {
     cb(null, (user as IUser).id);
 });
 passport.deserializeUser((id, cb) => {
-    models.User.findById(id).then((user) => {
+    User.findById(id).then((user) => {
         cb(null, user);
     })
     .catch((err) => {
@@ -98,8 +95,9 @@ app.set('layout', 'layout');
 app.use('/static', express.static(__dirname + '/static'));
 
 // Add Routers
-app.use('/' , index(routerPassIn));
-app.use('/login', login(routerPassIn));
+app.use('/' , index());
+app.use('/login', login());
+app.use('/championlists', championlists());
 
 
 // 404 page

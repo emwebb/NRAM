@@ -1,9 +1,8 @@
 import express, { Router } from "express"
 
 import * as champions from "../riotdata/champions.json"
-import RouterPassIn from "./routerPassIn";
 
-export default (routerPassIn : RouterPassIn) : Router => {
+export default () : Router => {
     var championList : string[] = [];
 
     for(var key in champions.data)
