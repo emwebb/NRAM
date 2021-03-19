@@ -32,4 +32,7 @@ $(() => {
         dropdownAutoWidth : true,
         width : '200'
     });
+    
+    let socket = io("http://localhost:8080");
+    socket.emit('Message', 'Hello World');
 });

@@ -9,7 +9,8 @@ var npmClientLibs = [
     'node_modules/jquery/dist/jquery.js',
     'node_modules/select2/dist/js/select2.js',
     'node_modules/knockout/build/output/knockout-latest.js',
-    'node_modules/bootstrap3/dist/js/bootstrap.js'
+    'node_modules/bootstrap3/dist/js/bootstrap.js',
+    'node_modules/socket.io-client/dist/socket.io.js'
 ];
 
 var npmClientCss = [

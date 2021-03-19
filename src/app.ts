@@ -15,6 +15,12 @@ import { LoginLogic } from "./logic/login/login";
 import UserMiddleware from './middleware/userMiddleware'
 import MenuMiddleware from './middleware/menuMiddleware'
 
+import cookieParser from "cookie-parser";
+import socketio from "socket.io"
+import passportSocketIo from "passport.socketio"
+import http from "http";
+import { CommHandler } from "./commHandler"
+
 const app = express();
 const port = 8080;
 const dbString = 'mongodb://localhost:27017/nram'
@@ -106,9 +112,19 @@ app.use('*', (req, res) => {
     res.render('404');
 });
 
+//Socket
+let server = new http.Server(app);
+let io = socketio(server);
+io.use(passportSocketIo.authorize({
+    key: 'connect.sid',
+    secret: secret,
+    store: sessionStore,
+    passport: passport
+}));
 
+var commHandler = new CommHandler(io);
 
 // Start server
-app.listen( port, () => {
+server.listen( port, () => {
     console.log(`server started at http://localhost:${ port }`);
 })
