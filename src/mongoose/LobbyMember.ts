@@ -18,6 +18,11 @@ export interface ILobbyMemberPopulated extends ILobbyMember {
     roll_o: ILobbyMemberRoll[];
 }
 
+export interface ILobbyMemberLobbyPopulated extends ILobby {
+    owner_o : IUser[];
+    lobby_o : ILobby[];
+}
+
 export const LobbyMemberSchema = new Schema({
     champList : {
         type : Schema.Types.ObjectId,

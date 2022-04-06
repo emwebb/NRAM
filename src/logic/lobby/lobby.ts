@@ -4,7 +4,7 @@ import Lobby, {ILobby} from "../../mongoose/Lobby";
 import ChampionList, {IChampionList} from "../../mongoose/ChampionList"
 import { ObjectId, ObjectID } from "mongodb";
 import { CommHandler } from "../../commHandler";
-import LobbyMember, { ILobbyMemberPopulated } from "../../mongoose/LobbyMember";
+import LobbyMember, { ILobbyMemberLobbuPopulated, ILobbyMemberPopulated } from "../../mongoose/LobbyMember";
 import User from "../../mongoose/User";
 import { Utils } from "../../util/utils";
 import LobbyMemberRoll, { ILobbyMemberRoll } from "../../mongoose/LobbyMemberRoll";
@@ -66,6 +66,42 @@ export namespace LobbyLogic {
                             }).catch((err) => {
                                 reject(err);
                             })
+                        });
+                    });
+                });
+            });
+        }
+
+        getLobbyMembers(userId: string, lobbyId: string) : Promise<Model.Lobby.LobbyMember[]> {
+            return new Promise<Model.Lobby.LobbyMember[]>((resolve, reject) => {
+                this.isLobbyMember(new ObjectId(lobbyId), new ObjectId(userId)).then((isLobbyMember) => {
+                    if(!isLobbyMember){
+                        reject('User is not a member of this lobby');
+                        return;
+                    }
+                    Lobby.findById(lobbyId).then((lobby) => {
+                        if(lobby == null) {
+                            reject('No such lobby');
+                            return;
+                        }
+                        this.getPopulatedLobbyMembers({
+                            _id: lobby._id
+                        }).then((results) => {
+                            resolve(results.map((result) => {
+                                let roll: Model.Lobby.LobbyMemberRoll | undefined;
+                                if(result.roll_o.length > 0) {
+                                    roll = {
+                                        purple: Boolean(result.roll_o[0].purple),
+                                        champion: String(result.roll_o[0].champion)
+                                    }
+                                }
+                                return {
+                                    userId: result.user_o[0].id,
+                                    username: String(result.user_o[0].username),
+                                    accepted: Boolean(result.accepted),
+                                    roll: roll
+                                }
+                            }))
                         });
                     });
                 });
@@ -262,6 +298,30 @@ export namespace LobbyLogic {
             });
         }
 
+        getLobbiesUserIsMemberOf(userId : string, username : string) : Promise<Model.Lobby.LobbyMemberOf[]> {
+            return new Promise<Model.Lobby.LobbyMemberOf[]>((resolve, reject) => {
+                LobbyMember.aggregate<ILobbyMemberLobbyPopulated>().match({
+                    user : new ObjectId(userId)
+                })
+                .lookup({
+                    from : 'lobbys',
+                    localField : 'lobby',
+                    foreignField : '_id',
+                    as : 'lobby_o',
+                })
+                .lookup({
+                    from : 'users',
+                    localField : 'lobby_o.owner',
+                    foreignField: '_id',
+                    as : 'owner_o'
+                })
+                .exec((err, results) => {
+
+                });
+            });
+        }
+
+         
         private generateRolls(lobbyMembers : ILobbyMemberPopulated[]): ILobbyMemberRoll[] {
             let randomizedLobbyMembers = Utils.shuffle(lobbyMembers);
            
@@ -384,7 +444,7 @@ export namespace LobbyLogic {
                                 {
                                     from: 'lobbymemberrolls',
                                     localField: '_id',
-                                    foriegnField: 'member',
+                                    foreignField: 'member',
                                     as: 'roll_o'
                                 }
                         )

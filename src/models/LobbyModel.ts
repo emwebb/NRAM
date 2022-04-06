@@ -7,6 +7,12 @@ export namespace Model {
             rolled : boolean;
         }
 
+        export interface LobbyMemberOf extends Lobby {
+            username : string;
+            userId : string;
+            accepted : boolean;
+        }
+
         export interface LobbyMemberRoll {
             champion : string;
             purple : boolean;
