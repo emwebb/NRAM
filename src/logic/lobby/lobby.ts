@@ -366,9 +366,9 @@ export namespace LobbyLogic {
         private balanceTeams(unbalanced : TeamPair, alpha: number, runs: number): TeamPair{
             let teamPair = unbalanced;
             for(let n = 0; n < runs; n++) {
-                let orderedPairs = this.getAllSwaps(teamPair).sort((a,b) => a.getDisparity() - b.getDisparity());
+                let orderedPairs = this.getAllSwaps(teamPair).sort((a,b) => Math.abs(a.getDisparity() - b.getDisparity()));
 
-                let adjustedRandom = Math.pow(Math.random(), Math.pow(alpha, 2));
+                let adjustedRandom = Math.pow(Math.random(), alpha)/2;
                 teamPair = orderedPairs[Math.floor(adjustedRandom * orderedPairs.length)];
             }
 
