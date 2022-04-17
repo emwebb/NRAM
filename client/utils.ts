@@ -7,6 +7,11 @@ namespace Utils {
         
     }
 
+    export function getClient() : Client {
+        var client = document.getElementById('data-client')?.dataset.client;
+        return JSON.parse(String(client));
+    }
+
     export function ajax<T,B>(url : string, method : string, body : B | undefined) : Promise<T> {
         return new Promise((resolve, reject) => {
             $.ajax({
@@ -22,6 +27,16 @@ namespace Utils {
             });
         });
     }
+
+    export interface User {
+        username : string;
+        userId : string;
+    }
+
+    export interface Client {
+        loggedIn : boolean;
+        user : User | undefined;
+    }
 }
 
 $(() => {
@@ -35,4 +50,7 @@ $(() => {
     
     let socket = io("http://localhost:8080");
     socket.emit('Message', 'Hello World');
+    socket.on('message', (message : any) => {
+        console.log(message);
+    });
 });

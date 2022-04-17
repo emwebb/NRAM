@@ -8,6 +8,7 @@
     <script src="/static/lib/socket.io.js"></script>
     <script src="/static/client/utils.js"></script>
     <script id="data-model" data-model="<%if(typeof(model) != 'undefined') { %> <%= JSON.stringify(model); %> <% } %> "></script>
+    <script id="data-client" data-client="<%= JSON.stringify(Client) %>"></script>
 </header>
 <body>
     <nav class="navbar navbar-default">

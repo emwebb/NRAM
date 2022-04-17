@@ -4,7 +4,7 @@ import Lobby, {ILobby} from "../../mongoose/Lobby";
 import ChampionList, {IChampionList} from "../../mongoose/ChampionList"
 import { ObjectId, ObjectID } from "mongodb";
 import { CommHandler } from "../../commHandler";
-import LobbyMember, { ILobbyMemberLobbuPopulated, ILobbyMemberPopulated } from "../../mongoose/LobbyMember";
+import LobbyMember, {ILobbyMember, ILobbyMemberLobbyPopulated, ILobbyMemberPopulated } from "../../mongoose/LobbyMember";
 import User from "../../mongoose/User";
 import { Utils } from "../../util/utils";
 import LobbyMemberRoll, { ILobbyMemberRoll } from "../../mongoose/LobbyMemberRoll";
@@ -24,12 +24,32 @@ export namespace LobbyLogic {
                 let lobby : ILobby = new Lobby();
                 lobby.owner = new ObjectId(userId);
                 lobby.name = name;
-                lobby.save().then((newLobby) => {
-                    resolve({
-                        lobbyId : newLobby.id,
-                        ownerId : userId,
-                        owner : username,
-                        rolled : false
+                ChampionList.find({
+                    owner : new ObjectId(userId)
+                }).then((championLists) => {
+                    if(championLists.length == 0) {
+                        reject('User has no champion lists configured');
+                        return;
+                    }
+                    lobby.save().then((newLobby) => {
+                        let lobbyMember : ILobbyMember = new LobbyMember();
+                        lobbyMember.lobby = lobby.id;
+                        lobbyMember.user = userId;
+                        lobbyMember.accepted = true;
+                        lobbyMember.champList = championLists[0].id
+                        lobbyMember.save().then((newLobbyMember) => {
+                            resolve({
+                                lobbyId : newLobby.id,
+                                ownerId : userId,
+                                owner : username,
+                                rolled : false
+                            });
+                        }).catch((err) => {
+                            reject(err);
+                        });
+                       
+                    }).catch((err) => {
+                        reject(err);
                     });
                 }).catch((err) => {
                     reject(err);
@@ -274,7 +294,7 @@ export namespace LobbyLogic {
                         }, new Map<ObjectId, ILobbyMemberPopulated>());
 
                         let populatedLobbyMember = newLobbyMemberRolls.map<Model.Lobby.LobbyMember>((value) => {
-                            let lobbyMember = mappedLobbyMembers.get(value._id);
+                            let lobbyMember = mappedLobbyMembers.get(value.member);
                             return {
                                 username: String(lobbyMember?.user_o[0].username),
                                 userId: lobbyMember?.user_o[0].id,
@@ -298,13 +318,13 @@ export namespace LobbyLogic {
             });
         }
 
-        getLobbiesUserIsMemberOf(userId : string, username : string) : Promise<Model.Lobby.LobbyMemberOf[]> {
-            return new Promise<Model.Lobby.LobbyMemberOf[]>((resolve, reject) => {
+        getLobbiesUserIsMemberOf(userId : string, username : string) : Promise<Model.Lobby.LobbyMembership[]> {
+            return new Promise<Model.Lobby.LobbyMembership[]>((resolve, reject) => {
                 LobbyMember.aggregate<ILobbyMemberLobbyPopulated>().match({
                     user : new ObjectId(userId)
                 })
                 .lookup({
-                    from : 'lobbys',
+                    from : 'lobbies',
                     localField : 'lobby',
                     foreignField : '_id',
                     as : 'lobby_o',
@@ -316,7 +336,33 @@ export namespace LobbyLogic {
                     as : 'owner_o'
                 })
                 .exec((err, results) => {
+                    if(err) {
+                        reject(err);
+                        return;
+                    } else {
+                        resolve(results.map((value) => {
+                            return {
+                                owner : String(value.owner_o[0].username),
+                                ownerId : value.owner_o[0]._id,
+                                lobbyName : String(value.lobby_o[0].name),
+                                lobbyId : value.lobby_o[0]._id,
+                                accepted : Boolean(value.accepted)
+                            }
+                        }));
+                    }
+                });
+            });
+        }
 
+        getAllUsers() : Promise<Model.Lobby.LobbyUser[]> {
+            return new Promise<Model.Lobby.LobbyUser[]>((resolve, reject) => {
+                User.find((err, users) => {
+                    resolve(users.map((user) => {
+                         return {
+                            username : String(user.username),
+                            userId : String(user._id)
+                         }
+                    }));
                 });
             });
         }
@@ -428,7 +474,7 @@ export namespace LobbyLogic {
                                 {
                                     from : 'users',
                                     localField : 'user',
-                                    foriegnField : '_id',
+                                    foreignField : '_id',
                                     as: 'user_o'
                                 }
                             )
@@ -462,7 +508,7 @@ export namespace LobbyLogic {
         private isLobbyMember(lobbyId: ObjectId, userId : ObjectId) : Promise<boolean> {
             return new Promise<boolean>((resolve, reject) => {
                 LobbyMember.findOne({
-                    _id: lobbyId,
+                    lobby: lobbyId,
                     user: userId
                 }).then((value) => {
                     resolve(value != null);

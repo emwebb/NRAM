@@ -12,6 +12,10 @@ export default (commHandler : CommHandler) : Router => {
         res.render('lobby/index');
     });
 
+    router.get('/view/:lobbyID', (req, res) => {
+        res.render('lobby/lobby', {model : req.params['lobbyID'] });
+    });
+
     router.get('/lobby/:lobbyID', (req, res) => {
         let user = req.user;
         if(user) {
@@ -95,6 +99,20 @@ export default (commHandler : CommHandler) : Router => {
             res.sendStatus(403);
         }
     });
+    
+    router.get('/lobby', (req, res) => {
+        let user = req.user;
+        if(user) {
+            logic.getLobbiesUserIsMemberOf((user as IUser).id, (user as IUser).username.toString()).then((lobby) => {
+                res.json(lobby);
+            }).catch((err) => {
+                res.sendStatus(500);
+                console.error(err);
+            });
+        } else {
+            res.sendStatus(403);
+        }
+    })
 
     router.post('/lobby', (req, res) => {
         let user = req.user;
@@ -123,6 +141,12 @@ export default (commHandler : CommHandler) : Router => {
             res.sendStatus(403);
         }
     });
+
+    router.get('/users', (req, res) => {
+        logic.getAllUsers().then((users) => {
+            res.json(users);
+        });
+    })
 
     return router;
 };

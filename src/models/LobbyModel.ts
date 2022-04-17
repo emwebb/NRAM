@@ -24,5 +24,18 @@ export namespace Model {
             accepted : boolean;
             roll? : LobbyMemberRoll;
         }
+
+        export interface LobbyMembership {
+            owner : string;
+            ownerId : string;
+            lobbyName : string;
+            lobbyId : string;
+            accepted : boolean;
+        }
+
+        export interface LobbyUser {
+            username : string;
+            userId : string;
+        }
     }
 }

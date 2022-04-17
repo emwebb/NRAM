@@ -3,6 +3,7 @@ import path from "path"
 import index from "./routers/index"
 import login from "./routers/login"
 import championlists from "./routers/championlists"
+import lobby from "./routers/lobby"
 import bodyParser from "body-parser"
 import expressEjsLayouts from "express-ejs-layouts";
 import mongoose, {Connection} from "mongoose";
@@ -14,6 +15,7 @@ import User, {IUser} from "./mongoose/User";
 import { LoginLogic } from "./logic/login/login";
 import UserMiddleware from './middleware/userMiddleware'
 import MenuMiddleware from './middleware/menuMiddleware'
+import ClientMiddleware from './middleware/clientUtilsMiddleware'
 
 import cookieParser from "cookie-parser";
 import socketio from "socket.io"
@@ -88,29 +90,13 @@ app.use(passport.session());
 
 app.use(UserMiddleware);
 app.use(MenuMiddleware);
+app.use(ClientMiddleware)
 
 //View Engine Setup
 app.use(expressEjsLayouts);
 app.set('views', path.join(__dirname, "views"));
 app.set('view engine', 'ejs');
 app.set('layout', 'layout');
-
-
-
-//Static content setup
-app.use('/static', express.static(__dirname + '/static'));
-
-// Add Routers
-app.use('/' , index());
-app.use('/login', login());
-app.use('/championlists', championlists());
-
-
-// 404 page
-app.use('*', (req, res) => {
-    res.statusCode = 404;
-    res.render('404');
-});
 
 //Socket
 let server = new http.Server(app);
@@ -123,6 +109,23 @@ io.use(passportSocketIo.authorize({
 }));
 
 var commHandler = new CommHandler(io);
+
+//Static content setup
+app.use('/static', express.static(__dirname + '/static'));
+
+// Add Routers
+app.use('/' , index());
+app.use('/login', login());
+app.use('/championlists', championlists());
+app.use('/lobby', lobby(commHandler));
+
+
+// 404 page
+app.use('*', (req, res) => {
+    res.statusCode = 404;
+    res.render('404');
+});
+
 
 // Start server
 server.listen( port, () => {

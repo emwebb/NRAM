@@ -8,7 +8,7 @@ namespace ChampionLists {
         lists : ChampionListsMemberModel[];
     }
 
-    export interface ChampionListModel extends ChampionListsMemberModel {
+    interface ChampionListModel extends ChampionListsMemberModel {
         champions : string[];
     }
 

@@ -1,0 +1,100 @@
+<script src="/static/client/lobbylobby.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Blue</div>
+                <div class="panel-body">
+                    <table class="table"> 
+                        <thead>
+                            <tr>
+                                <th>
+                                    Player
+                                </th>
+                                <th>
+                                    Champion
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: blueTeam">
+                            <tr>
+                                <th>
+                                    <span data-bind="text: $data.username"></span>
+                                </th>
+                                <th>
+                                    <span data-bind="text: $data.roll.champion"></span>
+                                </th>
+                                <th>
+                                    <img data-bind="attr: {src: '/static/img/champion/' + $data.roll.champion + '.png'}" width="25" height="25"/>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">You</div>
+                <div class="panel-body">
+                    <select id="select" class="select2-200" style="width : 200" data-bind="
+                    options: championLists, 
+                    optionsText: 'name', 
+                    optionsValue: 'id',
+                    value: selectedChampionList">
+                    </select>
+                    <button type="button" class="btn btn-default" data-bind="click: fnRoll">Roll</button>
+                    <select id="select" class="select2-200" style="width : 200" data-bind="
+                    options: users, 
+                    optionsText: 'username', 
+                    optionsValue: 'userId',
+                    value: selectedUser">
+                    </select>
+                    <button type="button" class="btn btn-default" data-bind="click: fnInviteUser">Invite</button>
+                    
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Players</div>
+                <div class="panel-body">
+                    <div class="btn-group-vertical" data-bind="foreach: noTeam" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" data-bind="text : $data.username"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Purple</div>
+                <div class="panel-body">
+                    <table class="table"> 
+                        <thead>
+                            <tr>
+                                <th>
+                                    Player
+                                </th>
+                                <th>
+                                    Champion
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: purpleTeam">
+                            <tr>
+                                <th>
+                                    <span data-bind="text: $data.username"></span>
+                                </th>
+                                <th>
+                                    <span data-bind="text: $data.roll.champion"></span>
+                                </th>
+                                <th>
+                                    <img data-bind="attr: {src: '/static/img/champion/' + $data.roll.champion + '.png'}" width="25" height="25"/>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

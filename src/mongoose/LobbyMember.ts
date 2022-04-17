@@ -18,7 +18,7 @@ export interface ILobbyMemberPopulated extends ILobbyMember {
     roll_o: ILobbyMemberRoll[];
 }
 
-export interface ILobbyMemberLobbyPopulated extends ILobby {
+export interface ILobbyMemberLobbyPopulated extends ILobbyMember {
     owner_o : IUser[];
     lobby_o : ILobby[];
 }
