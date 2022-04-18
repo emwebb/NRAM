@@ -7,10 +7,10 @@ export class CommHandler {
         this.io = io;
         this.userMap = new Map<string, socketio.Socket>();
         io.on('connect', (socket) => {
-            if(socket.request.user && socket.request.user.logged_in) {
-                this.userMap.set((socket.request.user.id as string), socket);
+            if((socket.request as any).user && (socket.request as any).user.logged_in) {
+                this.userMap.set(((socket.request as any).user.id as string), socket);
                 socket.on("disconnect", () => {
-                    this.userMap.delete((socket.request.user.id as string));
+                    this.userMap.delete(((socket.request as any).user.id as string));
                 });
             }
         });
@@ -22,7 +22,7 @@ export class CommHandler {
 
     sendMessage(userId : string, message : any) {
         if(this.userMap.has(userId)) {
-            this.userMap.get(userId)?.send(message);
+            this.userMap.get(userId)!.send(message);
         }
     }
 }

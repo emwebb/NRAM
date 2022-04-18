@@ -106,7 +106,7 @@ export namespace LobbyLogic {
                         }
                         this.getPopulatedLobbyMembers({
                             _id: lobby._id
-                        }).then((results) => {
+                        }, true).then((results) => {
                             resolve(results.map((result) => {
                                 let roll: Model.Lobby.LobbyMemberRoll | undefined;
                                 if(result.roll_o.length > 0) {
@@ -116,7 +116,7 @@ export namespace LobbyLogic {
                                     }
                                 }
                                 return {
-                                    userId: result.user_o[0].id,
+                                    userId: String(result.user_o[0]._id),
                                     username: String(result.user_o[0].username),
                                     accepted: Boolean(result.accepted),
                                     roll: roll
@@ -156,8 +156,8 @@ export namespace LobbyLogic {
                             lobbyMember.user = championLists[0].owner;
                             lobbyMember.lobby = lobby._id;
                             lobbyMember.save().then((newLobbyMember) => {
-                                if(this.commHandler.isUserConnected(newLobbyMember.user)) {
-                                    this.commHandler.sendMessage(newLobbyMember.user,{
+                                if(this.commHandler.isUserConnected(String(newLobbyMember.user))) {
+                                    this.commHandler.sendMessage(String(newLobbyMember.user),{
                                         type : 'lobbyInvite',
                                         lobby : lobby.id
                                     });
@@ -432,6 +432,7 @@ export namespace LobbyLogic {
                     newTeamPair.purple[p] = tempValue;
                     newTeamPair.purple[p].team = Team.Purple;
                     newTeamPair.blue[b].team = Team.Blue;
+                    teamPairs.push(newTeamPair);
                 }
             }
 
@@ -456,20 +457,22 @@ export namespace LobbyLogic {
             });
         } 
 
-        private getPopulatedLobbyMembers(searchOptions: PopulatedLobbyMemberSearch) : Promise<ILobbyMemberPopulated[]> {
+        private getPopulatedLobbyMembers(searchOptions: PopulatedLobbyMemberSearch, includeInvited : boolean = false) : Promise<ILobbyMemberPopulated[]> {
             return new Promise<ILobbyMemberPopulated[]>((resolve, reject) => {
                 Lobby.findOne(searchOptions).then((lobby) => {
                     if(lobby == null) {
                         reject('No such lobby owner by user');
                         return;
                     }
-
+                    let match = includeInvited ? {
+                        lobby : lobby._id,
+                    } :
+                    {
+                        lobby : lobby._id, 
+                        accepted : true
+                    }
                     LobbyMember.aggregate()
-                        .match(
-                            {
-                                lobby : lobby._id, 
-                                accepted : true
-                            })
+                        .match(match)
                         .lookup(
                                 {
                                     from : 'users',
@@ -493,6 +496,13 @@ export namespace LobbyLogic {
                                     foreignField: 'member',
                                     as: 'roll_o'
                                 }
+                        )
+                        .addFields(
+                            {
+                                roll_o: {
+                                '$slice': ['$roll_o', -1]
+                                }
+                            }
                         )
                         .exec((err, results) => {
                             if(err) {
@@ -523,8 +533,8 @@ export namespace LobbyLogic {
                 _id : lobbyId
             }).then((value) => {
                 value?.forEach((value) => {
-                    if(this.commHandler.isUserConnected(value.user)) {
-                        this.commHandler.sendMessage(value.user, message);
+                    if(this.commHandler.isUserConnected(String(value.user))) {
+                        this.commHandler.sendMessage(String(value.user), message);
                     }
                 })
             });

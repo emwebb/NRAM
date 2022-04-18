@@ -5,6 +5,8 @@ export interface IUser extends Document {
     hash : String;
     salt : String;
     rank : Number;
+    email : String;
+    emailVerified : Boolean;
 }
 
 export const UserSchema = new Schema({
@@ -24,6 +26,15 @@ export const UserSchema = new Schema({
         type : Number,
         required : true,
         default : 0
+    },
+    email : {
+        type : String,
+        required : true
+    },
+    emailVerified : {
+        type : Boolean,
+        required : true,
+        default : false
     }
 });
 

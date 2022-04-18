@@ -100,12 +100,22 @@ app.set('layout', 'layout');
 
 //Socket
 let server = new http.Server(app);
-let io = socketio(server);
+let io = new socketio.Server(server);
 io.use(passportSocketIo.authorize({
     key: 'connect.sid',
     secret: secret,
     store: sessionStore,
-    passport: passport
+    passport: passport,
+    success : (data, accept) => {
+        console.log(data);
+        accept(null, true);
+    },
+    fail : (data, message, error, accept) => {
+        console.log(data);
+        console.log(message);
+        console.log(error);
+        accept(error, false);
+    }
 }));
 
 var commHandler = new CommHandler(io);

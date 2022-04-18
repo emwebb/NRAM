@@ -58,6 +58,8 @@ namespace LobbyLobby {
         blueTeam : KnockoutComputed<LobbyMember[]>;
         purpleTeam : KnockoutComputed<LobbyMember[]>;
 
+        inviteableUsers : KnockoutComputed<LobbyUser[]>;
+
         selectedChampionList : KnockoutObservable<string>;
         selectedUser : KnockoutObservable<string>;
 
@@ -105,6 +107,17 @@ namespace LobbyLobby {
                 return purpleTeamMembers;
             });
 
+            this.inviteableUsers = ko.pureComputed(() => {
+                let inviteableUsers : LobbyUser[] = [];
+                for(let n = 0; n < this.users().length; n++) {
+                    let user = this.users()[n];
+                    if(!this.lobbyMembers().some((lobbyMember : LobbyMember) => lobbyMember.userId == user.userId)) {
+                        inviteableUsers.push(user);
+                    }
+                }
+                return inviteableUsers;
+            });
+
             this.selectedChampionList = ko.observable('');
             this.selectedUser = ko.observable('');
             
@@ -124,6 +137,13 @@ namespace LobbyLobby {
             this.reloadLobby();
             this.reloadLobbyMembers();
             this.reloadUsers();
+
+            Utils.getCommHandler().addEventListener('lobbyUpdated',(event : Event) => {
+                if((event as CustomEvent).detail['lobby'] == this.lobbyId) {
+                    this.reloadLobby();
+                    this.reloadLobbyMembers(); 
+                }
+            });
         }
 
         reloadLobby() {
@@ -173,10 +193,7 @@ namespace LobbyLobby {
 
         roll() {
             Utils.ajax<LobbyMember[], null>(`/lobby/lobby/${this.lobbyId}/roll`, 'POST', null).then((lobbyMembers) => {
-                this.lobbyMembers.removeAll();
-                for(let n = 0; n < lobbyMembers.length; n++) {
-                    this.lobbyMembers.push(lobbyMembers[n]);
-                }
+                this.reloadChampionLists();
             });
         }
     }

@@ -28,6 +28,29 @@ namespace Utils {
         });
     }
 
+    let socket : SocketIOClient.Socket;
+    let commHandler : EventTarget;
+
+    export function getSocket() : SocketIOClient.Socket {
+        return socket;
+    }
+
+    export function getCommHandler() : EventTarget {
+        return commHandler;
+    }
+
+    export function initSocketIo() {
+        socket = io(`http://${location.host}`);
+        commHandler = new EventTarget();
+        socket.on('message', (message : CommMessage) => {
+            commHandler.dispatchEvent(new CustomEvent(message.type, { detail : message}));
+        });
+    }
+
+    export interface CommMessage {
+        type : string;
+    }
+
     export interface User {
         username : string;
         userId : string;
@@ -47,10 +70,5 @@ $(() => {
         dropdownAutoWidth : true,
         width : '200'
     });
-    
-    let socket = io("http://localhost:8080");
-    socket.emit('Message', 'Hello World');
-    socket.on('message', (message : any) => {
-        console.log(message);
-    });
+    Utils.initSocketIo();
 });

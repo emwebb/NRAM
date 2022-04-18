@@ -61,7 +61,9 @@ export default () : Router => {
                 {
                     username: req.body['username'],
                     hash: hash,
-                    salt: salt
+                    salt: salt,
+                    email: req.body['email'],
+                    emailVerified: false
                 }
             )
             newUser.save()
