@@ -15,7 +15,12 @@
             "program": "${workspaceFolder}\\build\\app.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "env": {
+                "PORT" : "8080",
+                "MONGODB" : "mongodb://localhost:27017/nram",
+                "SECRET" : "fsafdsafsdafdsa"
+            }
         }
     ]
 }

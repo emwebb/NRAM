@@ -16,7 +16,7 @@
                 <div class="panel-heading">Champion Lists</div>
                 <div class="panel-body">
                     <div class="btn-group-vertical" data-bind="foreach: championLists" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" data-bind="click : $parent.selectedChampionList($data), text : $data.name, class : $parent.selectedChampionList().id == $data.id ? 'active' : ''"></button>
+                        <button type="button" class="btn btn-default" data-bind="click : $parent.selectedChampionList, text : $data.name, class : $parent.selectedChampionList().id == $data.id ? 'active' : ''"></button>
                     </div>
                 </div>
             </div>

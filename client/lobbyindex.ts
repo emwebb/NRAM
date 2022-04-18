@@ -43,7 +43,7 @@ namespace LobbyIndex {
         newLobbyName : KnockoutObservable<string>;
         lobbyListDisplay : KnockoutComputed<LobbyListDisplay[]>
         fnAddLobby : () => void;
-        fnJoinLobby : (lobbyId : string) => void;
+        fnJoinLobby : (lobby : LobbyListDisplay) => void;
         constructor() {
             this.lobbies = ko.observableArray();
             this.newLobbyName = ko.observable('');
@@ -71,8 +71,8 @@ namespace LobbyIndex {
             this.fnAddLobby = () => {
                 this.addLobby();
             }
-            this.fnJoinLobby = (lobbyId : string) => {
-                this.joinLobby(lobbyId);
+            this.fnJoinLobby = (lobby : LobbyListDisplay) => {
+                this.joinLobby(lobby.id);
             }
             this.reloadLobbies();
         }

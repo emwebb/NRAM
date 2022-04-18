@@ -13,23 +13,25 @@ import session from "express-session";
 import connectMongo from "connect-mongo";
 import User, {IUser} from "./mongoose/User";
 import { LoginLogic } from "./logic/login/login";
-import UserMiddleware from './middleware/userMiddleware'
-import MenuMiddleware from './middleware/menuMiddleware'
-import ClientMiddleware from './middleware/clientUtilsMiddleware'
+import UserMiddleware from './middleware/userMiddleware';
+import MenuMiddleware from './middleware/menuMiddleware';
+import ClientMiddleware from './middleware/clientUtilsMiddleware';
+import fs from 'fs';
 
 import cookieParser from "cookie-parser";
 import socketio from "socket.io"
 import passportSocketIo from "passport.socketio"
+import https from "https";
 import http from "http";
 import { CommHandler } from "./commHandler"
 
 const app = express();
-const port = 8080;
-const dbString = 'mongodb://localhost:27017/nram'
-const secret = 'fsafdsafsdafdsa'
+const port = process.env.PORT;
+const dbString = process.env.MONGODB;
+const secret = process.env.SECRET;
 
 //Connect to DB
-mongoose.connect(dbString);
+mongoose.connect(dbString!);
 
 
 const mongooseConnection : Connection = mongoose.connection;
@@ -46,7 +48,7 @@ app.use(bodyParser({
 }))
 
 app.use(session({
-    secret : secret,
+    secret : secret!,
     resave : false,
     saveUninitialized : true,
     store: sessionStore
@@ -99,7 +101,17 @@ app.set('view engine', 'ejs');
 app.set('layout', 'layout');
 
 //Socket
-let server = new http.Server(app);
+let server : http.Server | https.Server
+
+if(process.env.HTTPS) {
+    server = new https.Server({
+        key: fs.readFileSync(process.env.KEY!),
+        cert: fs.readFileSync(process.env.CERT!)
+    });
+} else {
+    server = new http.Server();
+}
+
 let io = new socketio.Server(server);
 io.use(passportSocketIo.authorize({
     key: 'connect.sid',

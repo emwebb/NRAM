@@ -16,7 +16,7 @@
                 <div class="panel-heading">Lobbys</div>
                 <div class="panel-body">
                     <div class="btn-group-vertical" data-bind="foreach: lobbyListDisplay" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" data-bind="text : $data.displayName, class : $data.cssClass, click : $parent.fnJoinLobby($data.id)"></button>
+                        <button type="button" class="btn btn-default" data-bind="text : $data.displayName, class : $data.cssClass, click : $parent.fnJoinLobby"></button>
                     </div>
                 </div>
             </div>
