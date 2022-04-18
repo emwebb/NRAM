@@ -107,9 +107,9 @@ if(process.env.HTTPS) {
     server = new https.Server({
         key: fs.readFileSync(process.env.KEY!),
         cert: fs.readFileSync(process.env.CERT!)
-    });
+    },app);
 } else {
-    server = new http.Server();
+    server = new http.Server(app);
 }
 
 let io = new socketio.Server(server);
