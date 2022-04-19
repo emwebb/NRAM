@@ -63,9 +63,28 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Players</div>
                 <div class="panel-body">
-                    <div class="btn-group-vertical" data-bind="foreach: noTeam" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" data-bind="text : $data.username"></button>
-                    </div>
+                    <table class="table"> 
+                        <thead>
+                            <tr>
+                                <th>
+                                    Player
+                                </th>
+                                <th>
+                                    Accepted
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: noTeam">
+                            <tr>
+                                <th>
+                                    <span data-bind="text: $data.username"></span>
+                                </th>
+                                <th>
+                                    <span data-bind="text: $data.accepted"></span>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

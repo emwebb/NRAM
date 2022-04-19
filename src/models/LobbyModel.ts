@@ -23,6 +23,7 @@ export namespace Model {
             userId : string;
             accepted : boolean;
             roll? : LobbyMemberRoll;
+            championListId : string;
         }
 
         export interface LobbyMembership {

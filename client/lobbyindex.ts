@@ -22,6 +22,7 @@ namespace LobbyIndex {
         userId : string;
         accepted : boolean;
         roll? : LobbyMemberRoll;
+        championListId : string;
     }
 
     interface LobbyMembership {

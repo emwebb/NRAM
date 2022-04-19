@@ -79,8 +79,8 @@ export namespace LobbyLogic {
                             }).then((rolled) => {
                                 resolve({
                                     owner: String(user.username),
-                                    ownerId: user.id,
-                                    lobbyId: lobby.id,
+                                    ownerId: String(lobby.owner),
+                                    lobbyId: String(lobby._id),
                                     rolled: rolled
                                 });
                             }).catch((err) => {
@@ -119,6 +119,7 @@ export namespace LobbyLogic {
                                     userId: String(result.user_o[0]._id),
                                     username: String(result.user_o[0].username),
                                     accepted: Boolean(result.accepted),
+                                    championListId : String(result.champList),
                                     roll: roll
                                 }
                             }))
@@ -169,7 +170,8 @@ export namespace LobbyLogic {
                                 resolve({
                                     username : String(invitee.username),
                                     userId : newLobbyMember.user,
-                                    accepted : Boolean(newLobbyMember.accepted)
+                                    accepted : Boolean(newLobbyMember.accepted),
+                                    championListId : String(newLobbyMember.champList)
                                 })
                             });
                         }).catch((err) => {
@@ -207,7 +209,8 @@ export namespace LobbyLogic {
                         resolve({
                             username : username,
                             userId : newLobbyMember.user,
-                            accepted : Boolean(newLobbyMember.accepted)
+                            accepted : Boolean(newLobbyMember.accepted),
+                            championListId : String(newLobbyMember.champList)
                         })
                     }).catch((err) => {
                         reject(err);
@@ -269,7 +272,8 @@ export namespace LobbyLogic {
                             resolve({
                                 username : username,
                                 userId : newLobbyMember.user,
-                                accepted : Boolean(newLobbyMember.accepted)
+                                accepted : Boolean(newLobbyMember.accepted),
+                                championListId : String(newLobbyMember.champList)
                             });
                         }).catch((err) => {
                             reject(err);
@@ -302,8 +306,8 @@ export namespace LobbyLogic {
                                 roll: {
                                     champion : String(value.champion),
                                     purple : Boolean(value.purple) 
-                                }
-
+                                },
+                                championListId : String(lobbyMember?.champList)
                             }
                         });
                         this.messageAllUsers(new ObjectId(lobbyId), {

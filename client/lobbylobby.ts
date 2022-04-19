@@ -22,6 +22,7 @@ namespace LobbyLobby {
         userId : string;
         accepted : boolean;
         roll? : LobbyMemberRoll;
+        championListId : string;
     }
 
     interface LobbyMembership {
@@ -160,28 +161,19 @@ namespace LobbyLobby {
 
         reloadLobbyMembers() {
             Utils.ajax<LobbyMember[], null>(`/lobby/lobby/${this.lobbyId}/members`, 'GET', null).then((lobbyMembers) => {
-                this.lobbyMembers.removeAll();
-                for(let n = 0; n < lobbyMembers.length; n++) {
-                    this.lobbyMembers.push(lobbyMembers[n]);
-                }
+                this.lobbyMembers(lobbyMembers);
             });
         }
 
         reloadChampionLists() {
             Utils.ajax<ChampionListsModel, null>('/championlists/championlist', 'GET', null).then((championLists) => {
-                this.championLists.removeAll();
-                championLists.lists.forEach((element) => {
-                    this.championLists.push(element);
-                });
+                this.championLists(championLists.lists);
             });
         }
 
         reloadUsers() {
             Utils.ajax<LobbyUser[], null>('/lobby/users', 'GET', null).then((userList) => {
-                this.users.removeAll();
-                userList.forEach((element) => {
-                    this.users.push(element);
-                });
+                this.users(userList);
             });
         }
 
@@ -192,6 +184,9 @@ namespace LobbyLobby {
         }
 
         changeChampionList(listId : string) {
+            if(listId == '' || listId == undefined) {
+                return;
+            }
             Utils.ajax<LobbyMember, {listID : string}>(`/lobby/lobby/${this.lobbyId}/championList`, 'POST', { listID : listId }).then((lobbyMember) => {
                 this.reloadLobbyMembers();
             });
