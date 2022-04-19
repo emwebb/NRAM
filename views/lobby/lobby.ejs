@@ -38,21 +38,26 @@
             <div class="panel panel-default">
                 <div class="panel-heading">You</div>
                 <div class="panel-body">
-                    <select id="select" class="select2-200" style="width : 200" data-bind="
-                    options: championLists, 
-                    optionsText: 'name', 
-                    optionsValue: 'id',
-                    value: selectedChampionList">
-                    </select>
-                    <button type="button" class="btn btn-default" data-bind="click: fnRoll">Roll</button>
-                    <select id="select" class="select2-200" style="width : 200" data-bind="
-                    options: inviteableUsers, 
-                    optionsText: 'username', 
-                    optionsValue: 'userId',
-                    value: selectedUser">
-                    </select>
-                    <button type="button" class="btn btn-default" data-bind="click: fnInviteUser">Invite</button>
-                    
+                    <div class="row">
+                        <select id="select" class="select2-200" style="width : 200" data-bind="
+                        options: championLists, 
+                        optionsText: 'name', 
+                        optionsValue: 'id',
+                        value: selectedChampionList">
+                        </select>
+                    </div>
+                    <div class="row" data-bind="visible: areWeOwner">
+                        <button type="button" class="btn btn-default" data-bind="click: fnRoll">Roll</button>
+                    </div>
+                    <div class="row" data-bind="visible: areWeOwner">
+                        <select id="select" class="select2-200" style="width : 200" data-bind="
+                        options: inviteableUsers, 
+                        optionsText: 'username', 
+                        optionsValue: 'userId',
+                        value: selectedUser">
+                        </select>
+                        <button type="button" class="btn btn-default" data-bind="click: fnInviteUser">Invite</button>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">

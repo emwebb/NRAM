@@ -9,7 +9,8 @@ export default () : Router => {
         Unknown = 0,
         LoginFailed,
         UsernameTakes ,
-        UnsecurePassword
+        UnsecurePassword,
+        InvalidEmail
     }
 
     var router = express.Router();
@@ -30,6 +31,8 @@ export default () : Router => {
                 case LoginErrors.UnsecurePassword : 
                     model.errorMessage = "This password is not secure enough";
                     break;
+                case LoginErrors.InvalidEmail :
+                    model.errorMessage = "Invalid Email"
                 default :
                     model.errorMessage = "Unknown Error";
             }
@@ -49,10 +52,16 @@ export default () : Router => {
         }).then((user) => {
             if(user) {
                 res.redirect(`/login?error=${LoginErrors.UsernameTakes}`);
+                return;
                 
             }
             if(!LoginLogic.isSecurePassword(req.body['password'])) {
                 res.redirect(`/login?error=${LoginErrors.UnsecurePassword}`);
+                return;
+            }
+            if(!req.body['email']) {
+                res.redirect(`/login?error=${LoginErrors.UnsecurePassword}`);
+                return;
             }
             var saltHash = LoginLogic.generatePassword(req.body['password']);
             var salt = saltHash.salt;

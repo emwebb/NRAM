@@ -58,6 +58,8 @@ namespace LobbyLobby {
         blueTeam : KnockoutComputed<LobbyMember[]>;
         purpleTeam : KnockoutComputed<LobbyMember[]>;
 
+        areWeOwner : KnockoutComputed<boolean>
+
         inviteableUsers : KnockoutComputed<LobbyUser[]>;
 
         selectedChampionList : KnockoutObservable<string>;
@@ -105,6 +107,10 @@ namespace LobbyLobby {
                     }
                 });
                 return purpleTeamMembers;
+            });
+            
+            this.areWeOwner = ko.computed(() => {
+                return this.lobby().ownerId == Utils.getClient().user?.userId;
             });
 
             this.inviteableUsers = ko.pureComputed(() => {

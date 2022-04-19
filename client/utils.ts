@@ -40,7 +40,7 @@ namespace Utils {
     }
 
     export function initSocketIo() {
-        socket = io(`http://${location.host}`);
+        socket = io(`${location.origin}`);
         commHandler = new EventTarget();
         socket.on('message', (message : CommMessage) => {
             commHandler.dispatchEvent(new CustomEvent(message.type, { detail : message}));
