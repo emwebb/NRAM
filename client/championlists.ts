@@ -125,6 +125,6 @@ namespace ChampionLists {
 
 $(function () {
     var championList = new ChampionLists.Model();
-    ko.applyBindings(championList);
+    ko.applyBindings(championList, document.getElementById('main'));
     $('#select').select2();
 });

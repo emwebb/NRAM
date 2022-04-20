@@ -7,11 +7,12 @@
     <script src="/static/lib/bootstrap.js"></script>
     <script src="/static/lib/socket.io.js"></script>
     <script src="/static/client/utils.js"></script>
+    <script src="/static/client/layout.js"></script>
     <script id="data-model" data-model="<%if(typeof(model) != 'undefined') { %> <%= JSON.stringify(model); %> <% } %> "></script>
     <script id="data-client" data-client="<%= JSON.stringify(Client) %>"></script>
 </header>
 <body>
-    <nav class="navbar navbar-default">
+    <nav id="layout" class="navbar navbar-default">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>

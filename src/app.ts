@@ -4,6 +4,7 @@ import index from "./routers/index"
 import login from "./routers/login"
 import championlists from "./routers/championlists"
 import lobby from "./routers/lobby"
+import account from "./routers/account"
 import bodyParser from "body-parser"
 import expressEjsLayouts from "express-ejs-layouts";
 import mongoose, {Connection} from "mongoose";
@@ -140,7 +141,7 @@ app.use('/' , index());
 app.use('/login', login());
 app.use('/championlists', championlists());
 app.use('/lobby', lobby(commHandler));
-
+app.use('/account', account());
 
 // 404 page
 app.use('*', (req, res) => {

@@ -17,7 +17,8 @@ export default () : Router => {
     router.get('/', (req, res) => {
         var model = {
             hasError : false,
-            errorMessage : ''
+            errorMessage : '',
+            success : false
         }
         if(req.query['error']) {
             model.hasError = true;
@@ -33,10 +34,16 @@ export default () : Router => {
                     break;
                 case LoginErrors.InvalidEmail :
                     model.errorMessage = "Invalid Email"
+                    break;
                 default :
                     model.errorMessage = "Unknown Error";
             }
         }
+
+        if(req.query['success']) {
+            model.success = true;
+        }
+        
         res.render('login/index', { model : model });
     });
     
@@ -46,42 +53,17 @@ export default () : Router => {
         }
     ));
 
-    router.post('/register', (req, res, next) => {
-        User.findOne({
-            username : req.body['username']
-        }).then((user) => {
-            if(user) {
-                res.redirect(`/login?error=${LoginErrors.UsernameTakes}`);
+    router.post('/register', (req, res) => {
+
+        LoginLogic.register(req.body['username'], req.body['password'], req.body['email']).then((result) => {
+            if(!result.success) {
+                res.redirect(`/login?error=${result.error}`);
                 return;
-                
+            } else {
+                res.redirect(`/login?success=true`);
             }
-            if(!LoginLogic.isSecurePassword(req.body['password'])) {
-                res.redirect(`/login?error=${LoginErrors.UnsecurePassword}`);
-                return;
-            }
-            if(!req.body['email']) {
-                res.redirect(`/login?error=${LoginErrors.UnsecurePassword}`);
-                return;
-            }
-            var saltHash = LoginLogic.generatePassword(req.body['password']);
-            var salt = saltHash.salt;
-            var hash = saltHash.hash;
-            var newUser = new User(
-                {
-                    username: req.body['username'],
-                    hash: hash,
-                    salt: salt,
-                    email: req.body['email'],
-                    emailVerified: false
-                }
-            )
-            newUser.save()
-                .then((user => {
-                    console.log(user);
-                }));
-                res.redirect('/login');
-        });
-        
+
+        });        
     });
 
     router.get('/logout', (req, res) => {

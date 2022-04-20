@@ -32,7 +32,7 @@ var middlware : RequestHandler = (req, res, next) => {
             active : req.url == '/championlists/'
         });
         menuItems.push({
-            displayName : 'Lobbies',
+            displayName : 'Lobbies <span class="badge badge-primary" data-bind="text: lobbyInvites, visible: anyLobbyInvites"></span>',
             type: MenuItemType.Button,
             link: '/lobby/',
             active : req.url == '/lobby/'
@@ -41,6 +41,12 @@ var middlware : RequestHandler = (req, res, next) => {
             displayName : (req.user as IUser).username.toString(),
             type: MenuItemType.Dropdown,
             children : [
+                {
+                    displayName : "Account",
+                    type : MenuItemType.Button,
+                    link : '/account/',
+                    active : req.url == '/account/'
+                },
                 {
                     displayName : "Logout",
                     type : MenuItemType.Button,

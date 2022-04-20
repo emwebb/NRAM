@@ -115,6 +115,6 @@ namespace LobbyIndex {
 
 $(function () {
     var lobbyIndex = new LobbyIndex.Model();
-    ko.applyBindings(lobbyIndex);
+    ko.applyBindings(lobbyIndex, document.getElementById('main'));
     $('#select').select2();
 });

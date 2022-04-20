@@ -1,4 +1,4 @@
-<div class="container">
+<div id="main" class="container">
     <% if(model.hasError) {
         %>
         <div class="alert alert-danger alert-dismissible" role="alert">
@@ -7,7 +7,16 @@
         </div>
         <%
     }
+    if(model.success) {
+        %>
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> Registration successful! You may now login.
+        </div>
+        <%
+    }
     %>
+
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">

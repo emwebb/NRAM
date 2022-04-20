@@ -42,6 +42,6 @@ namespace Index {
 
 $(function () {
     var indexModel = new Index.Model();
-    ko.applyBindings(indexModel);
+    ko.applyBindings(indexModel, document.getElementById('main'));
     $('#select').select2();
 });

@@ -162,6 +162,11 @@ namespace LobbyLobby {
         reloadLobbyMembers() {
             Utils.ajax<LobbyMember[], null>(`/lobby/lobby/${this.lobbyId}/members`, 'GET', null).then((lobbyMembers) => {
                 this.lobbyMembers(lobbyMembers);
+                this.lobbyMembers().forEach((member) => {
+                    if(member.userId == Utils.getClient().user?.userId) {
+                        this.selectedChampionList(member.championListId);
+                    }
+                });
             });
         }
 
@@ -205,6 +210,6 @@ namespace LobbyLobby {
 
 $(function () {
     var lobbyLobby = new LobbyLobby.Model();
-    ko.applyBindings(lobbyLobby);
+    ko.applyBindings(lobbyLobby, document.getElementById('main'));
     $('#select').select2();
 });
